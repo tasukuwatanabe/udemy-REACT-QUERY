@@ -49,7 +49,10 @@ export function Posts() {
           <li
             key={post.id}
             className="post-title"
-            onClick={() => setSelectedPost(post)}
+            onClick={() => {
+              deleteMutation.reset();
+              setSelectedPost(post);
+            }}
           >
             {post.title}
           </li>
@@ -76,10 +79,7 @@ export function Posts() {
       </div>
       <hr />
       {selectedPost && (
-        <PostDetail
-          post={selectedPost}
-          deleteMutation={deleteMutation.mutate}
-        />
+        <PostDetail post={selectedPost} deleteMutation={deleteMutation} />
       )}
     </>
   );
