@@ -9,10 +9,30 @@ const fetchUrl = async (url) => {
 };
 
 export function InfinitePeople() {
-  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
     queryKey: ["sw-people"],
     queryFn: ({ pageParam = initialUrl }) => fetchUrl(pageParam),
     getNextPageParam: (lastPage) => lastPage.next || undefined,
   });
-  return <InfiniteScroll />;
+  return (
+    <InfiniteScroll
+      loadMore={() => {
+        if (!isFetching) {
+          fetchNextPage();
+        }
+      }}
+      hasMore={hasNextPage}
+    >
+      {data.pages.map((pageData) =>
+        pageData.results.map((person) => (
+          <Person
+            key={person.name}
+            name={person.name}
+            hairColor={person.hair_color}
+            eyeColor={person.eye_color}
+          />
+        ))
+      )}
+    </InfiniteScroll>
+  );
 }
